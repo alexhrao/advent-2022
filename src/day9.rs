@@ -99,10 +99,10 @@ pub fn task2() {
         for _ in 0..num_steps {
             rope[0] += dir;
             for r in 1..10 {
-                if !are_touching(&rope[r-1], &rope[r]) {
+                if !are_touching(&rope[r - 1], &rope[r]) {
                     // Figure out the direction
-                    let xx = rope[r-1].0 - rope[r].0;
-                    let yy = rope[r-1].1 - rope[r].1;
+                    let xx = rope[r - 1].0 - rope[r].0;
+                    let yy = rope[r - 1].1 - rope[r].1;
                     rope[r] += if xx.is_negative() {
                         Direction::Left
                     } else if xx.is_positive() {

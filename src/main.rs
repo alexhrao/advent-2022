@@ -1,4 +1,5 @@
 mod day1;
+mod day10;
 mod day2;
 mod day3;
 mod day4;
@@ -45,6 +46,10 @@ fn main() {
         9 => {
             day9::task1();
             day9::task2();
+        }
+        10 => {
+            day10::task1();
+            day10::task2();
         }
         x => todo!("Day {}", x),
     }
