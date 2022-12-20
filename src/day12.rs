@@ -60,23 +60,25 @@ pub fn task2() {
             .filter(|&&rc| graph.within_bounds(rc))
             .any(|&rc| graph[rc] != 'a' as u8)
         })
-        .filter_map(|start| bfs(
-            &start,
-            |&(r, c)| {
-                [
-                    (r.saturating_sub(1), c),
-                    (r.saturating_add(1), c),
-                    (r, c.saturating_sub(1)),
-                    (r, c.saturating_add(1)),
-                ]
-                .iter()
-                .filter(|&&rc| graph.within_bounds(rc))
-                .filter(|&&rc| graph[rc] <= (graph[(r, c)] + 1))
-                .copied()
-                .collect::<Vec<(usize, usize)>>()
-            },
-            |&rc| rc == end,
-        ))
+        .filter_map(|start| {
+            bfs(
+                &start,
+                |&(r, c)| {
+                    [
+                        (r.saturating_sub(1), c),
+                        (r.saturating_add(1), c),
+                        (r, c.saturating_sub(1)),
+                        (r, c.saturating_add(1)),
+                    ]
+                    .iter()
+                    .filter(|&&rc| graph.within_bounds(rc))
+                    .filter(|&&rc| graph[rc] <= (graph[(r, c)] + 1))
+                    .copied()
+                    .collect::<Vec<(usize, usize)>>()
+                },
+                |&rc| rc == end,
+            )
+        })
         .min_by_key(|path| path.len())
         .unwrap();
     // TOO HIGH
