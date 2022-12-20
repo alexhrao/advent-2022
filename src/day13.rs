@@ -62,7 +62,15 @@ pub fn task2() {
         None => std::cmp::Ordering::Equal,
     });
 
-    let idx1 = packets.iter().position(|&(i, _)| i == packets.len() - 1).unwrap() + 1;
-    let idx2 = packets.iter().position(|&(i, _)| i == packets.len() - 2).unwrap() + 1;
+    let idx1 = packets
+        .iter()
+        .position(|&(i, _)| i == packets.len() - 1)
+        .unwrap()
+        + 1;
+    let idx2 = packets
+        .iter()
+        .position(|&(i, _)| i == packets.len() - 2)
+        .unwrap()
+        + 1;
     println!("{}", idx1 * idx2);
 }
