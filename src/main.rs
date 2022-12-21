@@ -13,6 +13,8 @@ mod day12;
 mod day13;
 mod day14;
 mod day15;
+mod day16;
+mod day17;
 mod utils;
 fn main() {
     match std::env::args().last().unwrap().parse::<u8>().unwrap() {
@@ -75,6 +77,10 @@ fn main() {
         15 => {
             day15::task1();
             day15::task2();
+        }
+        17 => {
+            day17::task1();
+            day17::task2();
         }
         x => todo!("Day {}", x),
     }
