@@ -125,14 +125,25 @@ pub fn task1() {
         .lines()
         .map(|m| {
             let monkey = if let Some(caps) = num_re.captures(m) {
-                Monkey { id: caps[1].to_string(), dependents: None, op: None, number: Some(caps[2].parse().unwrap()), }
+                Monkey {
+                    id: caps[1].to_string(),
+                    dependents: None,
+                    op: None,
+                    number: Some(caps[2].parse().unwrap()),
+                }
             } else if let Some(caps) = op_re.captures(m) {
-                Monkey { id: caps[1].to_string(), dependents: Some((caps[2].to_string(), caps[4].to_string())), op: Some(caps[3].into()), number: None, }
+                Monkey {
+                    id: caps[1].to_string(),
+                    dependents: Some((caps[2].to_string(), caps[4].to_string())),
+                    op: Some(caps[3].into()),
+                    number: None,
+                }
             } else {
                 panic!()
             };
             (monkey.id.clone(), monkey)
-        }).collect();
+        })
+        .collect();
     println!("{}", monkeys["root"].evaluate(&monkeys));
 }
 
@@ -143,9 +154,19 @@ pub fn task2() {
         .lines()
         .map(|m| {
             let mut monkey = if let Some(caps) = num_re.captures(m) {
-                Monkey { id: caps[1].to_string(), dependents: None, op: None, number: Some(caps[2].parse().unwrap()), }
+                Monkey {
+                    id: caps[1].to_string(),
+                    dependents: None,
+                    op: None,
+                    number: Some(caps[2].parse().unwrap()),
+                }
             } else if let Some(caps) = op_re.captures(m) {
-                Monkey { id: caps[1].to_string(), dependents: Some((caps[2].to_string(), caps[4].to_string())), op: Some(caps[3].into()), number: None, }
+                Monkey {
+                    id: caps[1].to_string(),
+                    dependents: Some((caps[2].to_string(), caps[4].to_string())),
+                    op: Some(caps[3].into()),
+                    number: None,
+                }
             } else {
                 panic!()
             };
@@ -153,7 +174,8 @@ pub fn task2() {
                 monkey.number = None
             }
             (monkey.id.clone(), monkey)
-        }).collect();
+        })
+        .collect();
     if let MonkeyResult::Unknown(past) = monkeys["root"].evaluate_for_equality(&monkeys) {
         // for each past, get a tuple
         let mut past: Vec<_> = past
@@ -161,17 +183,30 @@ pub fn task2() {
             .map(|m_id| {
                 let monkey = &monkeys[&m_id];
                 if let Some(deps) = monkey.dependents.clone() {
-                    if let MonkeyResult::Known(left) = monkeys[&deps.0].evaluate_for_equality(&monkeys) {
-                        (MonkeyOperation::Number(left), monkey.op.unwrap(), MonkeyOperation::Monkey(deps.1))
-                    } else if let MonkeyResult::Known(right) = monkeys[&deps.1].evaluate_for_equality(&monkeys) {
-                        (MonkeyOperation::Monkey(deps.0), monkey.op.unwrap(), MonkeyOperation::Number(right))
+                    if let MonkeyResult::Known(left) =
+                        monkeys[&deps.0].evaluate_for_equality(&monkeys)
+                    {
+                        (
+                            MonkeyOperation::Number(left),
+                            monkey.op.unwrap(),
+                            MonkeyOperation::Monkey(deps.1),
+                        )
+                    } else if let MonkeyResult::Known(right) =
+                        monkeys[&deps.1].evaluate_for_equality(&monkeys)
+                    {
+                        (
+                            MonkeyOperation::Monkey(deps.0),
+                            monkey.op.unwrap(),
+                            MonkeyOperation::Number(right),
+                        )
                     } else {
                         panic!()
                     }
                 } else {
                     panic!()
                 }
-            }).collect();
+            })
+            .collect();
         let (root_left, _, root_right) = past.pop().unwrap();
         let mut seed = MonkeyOperation::get_known(&root_left, &root_right);
 

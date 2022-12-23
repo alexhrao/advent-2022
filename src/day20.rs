@@ -16,12 +16,18 @@ pub fn task1() {
     // find where 0 is in this new world
     let z_idx = nums.iter().position(|&n| n == 0).unwrap();
     let z = index.iter().position(|&idx| idx == z_idx as isize).unwrap();
-    let z: isize = [1000, 2000, 3000].iter().map(|&o| nums[index[(z + o) as usize % index.len()] as usize]).sum();
+    let z: isize = [1000, 2000, 3000]
+        .iter()
+        .map(|&o| nums[index[(z + o) as usize % index.len()] as usize])
+        .sum();
     println!("{}", z);
 }
 
 pub fn task2() {
-    let nums: Vec<isize> = get_input(20).lines().map(|s| s.parse::<isize>().unwrap() * 811589153).collect();
+    let nums: Vec<isize> = get_input(20)
+        .lines()
+        .map(|s| s.parse::<isize>().unwrap() * 811589153)
+        .collect();
     let mut index: Vec<isize> = (0..(nums.len() as isize)).collect();
 
     for i in (0..(nums.len() as isize)).cycle().take(nums.len() * 10) {
@@ -37,6 +43,9 @@ pub fn task2() {
     // find where 0 is in this new world
     let z_idx = nums.iter().position(|&n| n == 0).unwrap();
     let z = index.iter().position(|&idx| idx == z_idx as isize).unwrap();
-    let z: isize = [1000, 2000, 3000].iter().map(|&o| nums[index[(z + o) as usize % index.len()] as usize]).sum();
+    let z: isize = [1000, 2000, 3000]
+        .iter()
+        .map(|&o| nums[index[(z + o) as usize % index.len()] as usize])
+        .sum();
     println!("{}", z);
 }

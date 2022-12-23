@@ -16,6 +16,7 @@ mod day15;
 //mod day16;
 mod day17;
 mod day18;
+mod day19;
 mod day20;
 mod day21;
 mod utils;
@@ -88,6 +89,9 @@ fn main() {
         18 => {
             day18::task1();
             day18::task2();
+        }
+        19 => {
+            day19::task1();
         }
         20 => {
             day20::task1();

@@ -1,4 +1,4 @@
-use std::collections::{HashSet, BTreeSet};
+use std::collections::{BTreeSet, HashSet};
 
 use regex::Regex;
 
@@ -18,7 +18,11 @@ pub fn task1() {
         .lines()
         .flat_map(|l| {
             let caps = re.captures(l).unwrap();
-            let cube: Point = (caps[1].parse().unwrap(), caps[2].parse().unwrap(), caps[3].parse().unwrap());
+            let cube: Point = (
+                caps[1].parse().unwrap(),
+                caps[2].parse().unwrap(),
+                caps[3].parse().unwrap(),
+            );
             [
                 Side::XY(cube),
                 Side::XZ(cube),
@@ -46,7 +50,11 @@ pub fn task2() {
         .lines()
         .map(|l| {
             let caps = re.captures(l).unwrap();
-            let cube: Point = (caps[1].parse().unwrap(), caps[2].parse().unwrap(), caps[3].parse().unwrap());
+            let cube: Point = (
+                caps[1].parse().unwrap(),
+                caps[2].parse().unwrap(),
+                caps[3].parse().unwrap(),
+            );
             [
                 Side::XY(cube),
                 Side::XZ(cube),
@@ -54,20 +62,25 @@ pub fn task2() {
                 Side::XY((cube.0, cube.1, cube.2 + 1)),
                 Side::XZ((cube.0, cube.1 + 1, cube.2)),
                 Side::YZ((cube.0 + 1, cube.1, cube.2)),
-            ].into_iter().collect::<BTreeSet<Side>>()
+            ]
+            .into_iter()
+            .collect::<BTreeSet<Side>>()
         })
         .collect();
-    let sides: Vec<Side> = squares.iter()
-        .flat_map(|s| s.clone())
-        .collect();
+    let sides: Vec<Side> = squares.iter().flat_map(|s| s.clone()).collect();
 
     let _points: Vec<Point> = get_input(18)
         .lines()
         .map(|l| {
             let caps = re.captures(l).unwrap();
-            (caps[1].parse().unwrap(), caps[2].parse().unwrap(), caps[3].parse().unwrap())
-        }).collect();
-    
+            (
+                caps[1].parse().unwrap(),
+                caps[2].parse().unwrap(),
+                caps[3].parse().unwrap(),
+            )
+        })
+        .collect();
+
     let mut seen = BTreeSet::new();
 
     for side in sides {
@@ -82,7 +95,7 @@ pub fn task2() {
     println!("To Remove: {}", to_remove.len());
     for cube in &seen {
         let pt = *match cube {
-            Side::XY(pt)|Side::XZ(pt)|Side::YZ(pt) => pt,
+            Side::XY(pt) | Side::XZ(pt) | Side::YZ(pt) => pt,
         };
         // for each side, see if we can reconstruct the square; if:
         // a) All the sides exist
