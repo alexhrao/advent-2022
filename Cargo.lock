@@ -9,6 +9,7 @@ dependencies = [
  "nom",
  "nom-supreme",
  "pathfinding",
+ "radix_fmt",
  "regex",
  "serde_json",
 ]
@@ -183,6 +184,12 @@ checksum = "8856d8364d252a14d474036ea1358d63c9e6965c8e5c1885c18f73d70bff9c7b"
 dependencies = [
  "proc-macro2",
 ]
+
+[[package]]
+name = "radix_fmt"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ce082a9940a7ace2ad4a8b7d0b1eac6aa378895f18be598230c5f2284ac05426"
 
 [[package]]
 name = "regex"
