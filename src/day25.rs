@@ -8,14 +8,15 @@ fn snafu_to_dec(snafu: &str) -> isize {
         .rev()
         .enumerate()
         .map(|(place, c)| {
-            5isize.pow(place as u32) * match c {
-                '2' => 2,
-                '1' => 1,
-                '0' => 0,
-                '-' => -1,
-                '=' => -2,
-                _ => panic!(),
-            }
+            5isize.pow(place as u32)
+                * match c {
+                    '2' => 2,
+                    '1' => 1,
+                    '0' => 0,
+                    '-' => -1,
+                    '=' => -2,
+                    _ => panic!(),
+                }
         })
         .sum()
 }
@@ -48,10 +49,7 @@ fn dec_to_snafu(dec: isize) -> String {
 }
 
 pub fn task1() {
-    let a = dec_to_snafu(get_input(25)
-        .lines()
-        .map(|l| snafu_to_dec(l))
-        .sum());
+    let a = dec_to_snafu(get_input(25).lines().map(|l| snafu_to_dec(l)).sum());
     println!("{}", a);
     todo!();
 }

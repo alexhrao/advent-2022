@@ -1,7 +1,10 @@
-use std::{ops::Add, collections::{HashMap, BTreeSet, hash_map::DefaultHasher}, hash::{Hash, Hasher}};
+use std::{
+    collections::{hash_map::DefaultHasher, BTreeSet, HashMap},
+    hash::{Hash, Hasher},
+    ops::Add,
+};
 
 use crate::utils::get_input;
-
 
 type Coordinate = (isize, isize);
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -22,8 +25,8 @@ impl Add<Direction> for Coordinate {
         match rhs {
             Direction::North => (self.0, self.1 - 1),
             Direction::South => (self.0, self.1 + 1),
-            Direction::East =>  (self.0 + 1, self.1),
-            Direction::West =>  (self.0 - 1, self.1),
+            Direction::East => (self.0 + 1, self.1),
+            Direction::West => (self.0 - 1, self.1),
             Direction::Northeast => (self.0 + 1, self.1 - 1),
             Direction::Northwest => (self.0 - 1, self.1 - 1),
             Direction::Southeast => (self.0 + 1, self.1 + 1),
@@ -45,17 +48,37 @@ fn square(elf: &Coordinate) -> [Coordinate; 8] {
     ]
 }
 
-fn get_suggestion(elf: &Coordinate, elves: &BTreeSet<Coordinate>, idx: usize) -> Option<Coordinate> {
+fn get_suggestion(
+    elf: &Coordinate,
+    elves: &BTreeSet<Coordinate>,
+    idx: usize,
+) -> Option<Coordinate> {
     // println!("Trying elf {:?}", elf);
     if !square(elf).iter().any(|elf| elves.contains(elf)) {
         //println!("Elf has no neighbors");
         return None;
     }
     let mut checks = [
-        [*elf + Direction::North, *elf + Direction::Northeast, *elf + Direction::Northwest],
-        [*elf + Direction::South, *elf + Direction::Southeast, *elf + Direction::Southwest],
-        [*elf + Direction::West, *elf + Direction::Northwest, *elf + Direction::Southwest],
-        [*elf + Direction::East, *elf + Direction::Southeast, *elf + Direction::Northeast],
+        [
+            *elf + Direction::North,
+            *elf + Direction::Northeast,
+            *elf + Direction::Northwest,
+        ],
+        [
+            *elf + Direction::South,
+            *elf + Direction::Southeast,
+            *elf + Direction::Southwest,
+        ],
+        [
+            *elf + Direction::West,
+            *elf + Direction::Northwest,
+            *elf + Direction::Southwest,
+        ],
+        [
+            *elf + Direction::East,
+            *elf + Direction::Southeast,
+            *elf + Direction::Northeast,
+        ],
     ];
     checks.rotate_left(idx);
     //println!("{:?}", elf);
@@ -107,7 +130,13 @@ pub fn task1() {
         .lines()
         .enumerate()
         .flat_map(|(y, line)| {
-            line.chars().enumerate().filter_map(move |(x, tile)| if tile == '#' { Some((x as isize, y as isize))} else { None })
+            line.chars().enumerate().filter_map(move |(x, tile)| {
+                if tile == '#' {
+                    Some((x as isize, y as isize))
+                } else {
+                    None
+                }
+            })
         })
         .collect();
     let min_y = elves.iter().map(|&(_, y)| y).min().unwrap();
@@ -152,55 +181,61 @@ pub fn task1() {
 
 pub fn task2() {
     let elves: BTreeSet<Coordinate> = get_input(23)
-    .lines()
-    .enumerate()
-    .flat_map(|(y, line)| {
-        line.chars().enumerate().filter_map(move |(x, tile)| if tile == '#' { Some((x as isize, y as isize))} else { None })
-    })
-    .collect();
-let min_y = elves.iter().map(|&(_, y)| y).min().unwrap();
-let min_x = elves.iter().map(|&(x, _)| x).min().unwrap();
-let mut elves: BTreeSet<Coordinate> = elves
-    .into_iter()
-    .map(|(x, y)| (x - min_x, y - min_y))
-    .collect();
-// println!("{:?}", elves);
-// Map of destination coordinate to original elf. If we find a collision, both elves
-// are reset to their original locations
-let mut suggestions: HashMap<Coordinate, Coordinate> = HashMap::new();
-let mut hash = hash_elves(&elves);
-for round in 0.. {
-    for elf in &elves {
-        // IF we have a suggestion, mark it; otherwise, just make it our
-        // own and continue
-        let Some(sugg) = get_suggestion(&elf, &elves, round % 4) else {
+        .lines()
+        .enumerate()
+        .flat_map(|(y, line)| {
+            line.chars().enumerate().filter_map(move |(x, tile)| {
+                if tile == '#' {
+                    Some((x as isize, y as isize))
+                } else {
+                    None
+                }
+            })
+        })
+        .collect();
+    let min_y = elves.iter().map(|&(_, y)| y).min().unwrap();
+    let min_x = elves.iter().map(|&(x, _)| x).min().unwrap();
+    let mut elves: BTreeSet<Coordinate> = elves
+        .into_iter()
+        .map(|(x, y)| (x - min_x, y - min_y))
+        .collect();
+    // println!("{:?}", elves);
+    // Map of destination coordinate to original elf. If we find a collision, both elves
+    // are reset to their original locations
+    let mut suggestions: HashMap<Coordinate, Coordinate> = HashMap::new();
+    let mut hash = hash_elves(&elves);
+    for round in 0.. {
+        for elf in &elves {
+            // IF we have a suggestion, mark it; otherwise, just make it our
+            // own and continue
+            let Some(sugg) = get_suggestion(&elf, &elves, round % 4) else {
             if suggestions.insert(*elf, *elf).is_some() {
                 panic!();
             }
             continue;
         };
-        // suggestion collision check - if collide, BOTH get reset!
-        if let Some(&orig) = suggestions.get(&sugg) {
-            // We have a collision!
-            suggestions.remove(&sugg);
-            suggestions.insert(orig, orig);
-            suggestions.insert(*elf, *elf);
-        } else {
-            // No collision! Add our suggestion
-            suggestions.insert(sugg, *elf);
+            // suggestion collision check - if collide, BOTH get reset!
+            if let Some(&orig) = suggestions.get(&sugg) {
+                // We have a collision!
+                suggestions.remove(&sugg);
+                suggestions.insert(orig, orig);
+                suggestions.insert(*elf, *elf);
+            } else {
+                // No collision! Add our suggestion
+                suggestions.insert(sugg, *elf);
+            }
         }
+        //TODO: Reset elves to suggestion results!
+        elves = suggestions.into_keys().collect();
+        let new_hash = hash_elves(&elves);
+        if hash == new_hash {
+            println!("{}", round + 1);
+            break;
+        } else {
+            hash = new_hash;
+        }
+        suggestions = HashMap::new();
+        // println!("After Round {}:", round + 1);
+        // print_board(&elves);
     }
-    //TODO: Reset elves to suggestion results!
-    elves = suggestions.into_keys().collect();
-    let new_hash = hash_elves(&elves);
-    if hash == new_hash {
-        println!("{}", round + 1);
-        break;
-    } else {
-        hash = new_hash;
-    }
-    suggestions = HashMap::new();
-    // println!("After Round {}:", round + 1);
-    // print_board(&elves);
-}
 }
